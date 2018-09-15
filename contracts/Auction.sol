@@ -28,22 +28,15 @@ contract Auction {
     //functions
 
     function Auction() public payable{    //constructor
-                
-        //Part 1 Task 1. Initialize beneficiary with address of smart contract’s owner
-        //Hint. In the constructor,"msg.sender" is the address of the owner.
-        // ** Start code here. 1 line approximately. **/
 	beneficiary = msg.sender;
-          //** End code here. **/
+         
         uint[] memory emptyArray;
         items[0] = Item({itemId:0,itemTokens:emptyArray});
         
-        //Part 1 Task 2. Initialize two items with at index 1 and 2. 
-        // ** Start code here. 2 lines approximately. **/
-	uint[] memory emptyArray1;
+	    uint[] memory emptyArray1;
         items[1] = Item({itemId:1,itemTokens:emptyArray1});
         uint[] memory emptyArray2;
         items[2] = Item({itemId:2,itemTokens:emptyArray2});
-        //** End code here**/
     }
     
 
@@ -51,13 +44,8 @@ contract Auction {
         
         
         bidders[bidderCount].personId = bidderCount;
-        
-        //Part 1 Task 3. Initialize the address of the bidder 
-        /*Hint. Here the bidders[bidderCount].addr should be initialized with address of the registrant.*/
 
-        // ** Start code here. 1 line approximately. **/
-	bidders[bidderCount].addr = msg.sender;
-        //** End code here. **
+	    bidders[bidderCount].addr = msg.sender;
         
         bidders[bidderCount].remainingTokens = 5; // only 5 tokens
         tokenDetails[msg.sender]=bidders[bidderCount];
@@ -71,27 +59,10 @@ contract Auction {
             _itemId -- uint, id of the item
             _count -- uint, count of tokens to bid for the item
         */
-        
-        /*
-        Part 1 Task 4. Implement the three conditions below.
-            4.1 If the number of tokens remaining with the bidder is < count of tokens bidded, revert.
-            4.2 If there are no tokens remaining with the bidder, revert.
-            4.3 If the id of the item for which bid is placed, is greater than 2, revert.
-
-        Hint: "tokenDetails[msg.sender].remainingTokens" gives the details of the number of tokens remaining with the bidder.
-        */
-        
-        // ** Start code here. 2 lines approximately. **/
     	if(tokenDetails[msg.sender].remainingTokens <_count || tokenDetails[msg.sender].remainingTokens <=0){revert();}
 	if(_itemId>items.length-1){revert();}
-        //** End code here. **
-        
-        /*Part 1 Task 5. Decrement the remainingTokens by the number of tokens bid and store the value in balance variable.
-        Hint. "tokenDetails[msg.sender].remainingTokens" should be decremented by "_count". */
- 
-        // ** Start code here. 1 line approximately. **
+
         uint balance= tokenDetails[msg.sender].remainingTokens - _count;
-        //** End code here. **
         
         tokenDetails[msg.sender].remainingTokens=balance;
         bidders[tokenDetails[msg.sender].personId].remainingTokens=balance;//updating the same balance in bidders map.
@@ -102,13 +73,9 @@ contract Auction {
         }
     }
     
-    // Part 2 Task 1. Create a modifier named "onlyOwner" to ensure that only owner is allowed to reveal winners
-    //Hint : Use require to validate if "msg.sender" is equal to the "beneficiary".
     modifier onlyOwner {
-        // ** Start code here. 2 lines approximately. **
         require(msg.sender == beneficiary);
         _;
-        //** End code here. **
     }
     
     
@@ -127,20 +94,13 @@ contract Auction {
 
             uint winnerId = currentItem.itemTokens[randomIndex];
                 
-            /* Part 1 Task 6. Assign the winners.
-            Hint." bidders[winnerId] " will give you the person object with the winnerId.
-            you need to assign the address of the person obtained above to winners[id] */
-
-            // ** Start coding here *** 1 line approximately.
             winners[id] = bidders[winnerId].addr;
                     
-            //** end code here*
                 
             }
         }
     } 
 
-  //Miscellaneous methods: Below methods are used to assist Grading. Please DONOT CHANGE THEM.
     function getPersonDetails(uint id) public constant returns(uint,uint,address){
         return (bidders[id].remainingTokens,bidders[id].personId,bidders[id].addr);
     }
